@@ -1,0 +1,15 @@
+Package: pive
+Title: Lasso-Type Instrumental Variables estimation methods with many invalid instruments and heteroskedasticity
+Version: 0.0.0
+Authors@R: 
+    person("Muhammad", "Qasim", , "muhammad.qasim@ju.se", role = c("aut", "cre"),
+           comment = c(ORCID = "http://orcid.org/0000-0002-6471-8500"))
+Description: The LassoTypeIV package estimates causal effects, and estimate and selects the number of invalid instruments using six methods based on Penalized K-class and Jackknife IV.
+Depends: boot, lars
+License: "GPL-2"
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
