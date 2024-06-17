@@ -4,14 +4,13 @@ The "pive" package provides estimates for causal models using many (weak) invali
 ## Installation
 
 You can install the **pive** package from GitHub
-
-# Install devtools if not already installed
+```r
+# Install devtools
 install.packages("devtools")
-
 # Install pive from GitHub
 devtools::install_github("Qasim-stat/pive")
-# Load the package
 library(pive)
+```
 
 ## Example
 ```r
@@ -35,9 +34,7 @@ Y <- X * beta + Z %*% delta + sigma_e
 results <- pive(Y, X, Z, bootstrap = TRUE, B = 100, alpha = 0.05)
 print(results)
 
-
 # Lasso-type jackknife IV methods
-
 Pz = Z %*% solve(t(Z) %*% Z) %*% t(Z); W = cbind(Y, X)
 iZZ<- solve(t(Z)%*%Z)
 h <- vector("numeric",length(Y))            
@@ -47,7 +44,6 @@ h[i] <- t(Z[i,])%*%iZZ%*%Z[i,]
 H = diag(h)
 klimlj <- min(eigen(ginv(t(W)  %*% W) %*% (t(W) %*% (Pz - H) %*% W ))$values)
 kfulj  <- (klimlj - (1-klimlj)/(n))*(1 - (1-klimlj)/(n))
-
 cv.LJIVE(Y,X,Z,k = 1)
 cv.LJIVE(Y,X,Z,k = klimlj)
 cv.LJIVE(Y,X,Z,k = kfulj)
