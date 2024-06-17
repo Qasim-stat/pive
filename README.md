@@ -14,7 +14,7 @@ library(pive)
 
 ## Example
 ```r
-set.seed(123)
+set.seed(1234)
 library(MASS)
 n <- 1000
 L <- 30
