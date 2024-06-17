@@ -4,7 +4,7 @@ The "pive" package provides estimates for causal models using many (weak) invali
 ## Installation
 
 You can install the **pive** package from GitHub
-```r
+
 # Install devtools if not already installed
 install.packages("devtools")
 
@@ -13,7 +13,7 @@ devtools::install_github("Qasim-stat/pive")
 # Load the package
 library(pive)
 
-Example
+## Example
 ```r
 set.seed(123)
 library(MASS)
