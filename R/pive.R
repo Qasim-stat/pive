@@ -30,14 +30,14 @@ pive <- function(Y, X, Z, bootstrap = TRUE, B = 500, alpha = 0.05, K = 10) {
     for(ii in 1:length(Y)){
       h[ii]   <- t(Z[ii,])%*%iZZ%*%Z[ii,]
     }#n
-    klimln <- min(eigen(solve(t(W)  %*% W) %*% (t(W) %*% (Pz) %*% W ))$values)
-    kfuln  <- (klimln - (1-klimln)/(n))*(1 - (1-klimln)/(n))
+    kliml <- min(eigen(solve(t(W)  %*% W) %*% (t(W) %*% (Pz) %*% W ))$values)
+    kful  <- (kliml - (1-kliml)/(n))/(1 - (1-kliml)/(n))
 
     H = diag(h)
-    klimlnj <- min(eigen(solve(t(W)  %*% W) %*% (t(W) %*% (Pz - H) %*% W ))$values)
-    kfulnj  <- (klimlnj - (1-klimlnj)/(n))*(1 - (1-klimlnj)/(n))
+    klimlj <- min(eigen(solve(t(W)  %*% W) %*% (t(W) %*% (Pz - H) %*% W ))$values)
+    kfulj  <- (klimlj - (1-klimlj)/(n))/(1 - (1-klimlj)/(n))
 
-    list(klimln = klimln, kfuln = kfuln, klimlnj = klimlnj, kfulnj = kfulnj)
+    list(kliml = kliml, kful = kful, klimlj = klimlj, kfulj = kfulj)
   }
   df <- data.frame(y = Y, X = X, Z)
 
@@ -52,11 +52,11 @@ pive <- function(Y, X, Z, bootstrap = TRUE, B = 500, alpha = 0.05, K = 10) {
 
     # Perform model fits using parameters
     beta_tsls  <- cv.PKCIVE(Y, X, Z, k = 1, K = K)$beta
-    beta_liml  <- cv.PKCIVE(Y, X, Z, k = params$klimln, K = K)$beta
-    beta_ful   <- cv.PKCIVE(Y, X, Z, k = params$kfuln, K = K)$beta
+    beta_liml  <- cv.PKCIVE(Y, X, Z, k = params$kliml, K = K)$beta
+    beta_ful   <- cv.PKCIVE(Y, X, Z, k = params$kful, K = K)$beta
     beta_pjtsls<- cv.LJIVE(Y, X, Z, k = 1, K = K)$beta
-    beta_pjliml<- cv.LJIVE(Y, X, Z, k = params$klimlnj, K = K)$beta
-    beta_pjful <- cv.LJIVE(Y, X, Z, k = params$kfulnj, K = K)$beta
+    beta_pjliml<- cv.LJIVE(Y, X, Z, k = params$klimlj, K = K)$beta
+    beta_pjful <- cv.LJIVE(Y, X, Z, k = params$kfulj, K = K)$beta
 
     # Return coefficients of PKCIVE and LJIVE
     c(beta_tsls, beta_liml, beta_ful, beta_pjtsls, beta_pjliml, beta_pjful)
@@ -80,11 +80,11 @@ pive <- function(Y, X, Z, bootstrap = TRUE, B = 500, alpha = 0.05, K = 10) {
     results <- data.frame(
       Method = c("PTSLS", "PLIML", "PFUL", "PJTSLS", "PJLIML", "PJFUL"),
       Estimate = c(cv.PKCIVE(Y, X, Z, k = 1, K = K)$beta,
-                   cv.PKCIVE(Y, X, Z, k = params$klimln, K = K)$beta,
-                   cv.PKCIVE(Y, X, Z, k = params$kfuln, K = K)$beta,
+                   cv.PKCIVE(Y, X, Z, k = params$kliml, K = K)$beta,
+                   cv.PKCIVE(Y, X, Z, k = params$kful, K = K)$beta,
                    cv.LJIVE(Y, X, Z, k = 1, K = K)$beta,
-                   cv.LJIVE(Y, X, Z, k = params$klimlnj, K = K)$beta,
-                   cv.LJIVE(Y, X, Z, k = params$kfulnj, K = K)$beta),
+                   cv.LJIVE(Y, X, Z, k = params$klimlj, K = K)$beta,
+                   cv.LJIVE(Y, X, Z, k = params$kfulj, K = K)$beta),
       Invalid_Count = NA,  # To be filled later
       Invalid_Instruments = NA,  # To be filled later
       Bootstrap_Estimate = boot_mean,
@@ -96,11 +96,11 @@ pive <- function(Y, X, Z, bootstrap = TRUE, B = 500, alpha = 0.05, K = 10) {
   } else {
     # If not bootstrapping, calculate estimates without bootstrap
     beta_tsls   <- cv.PKCIVE(Y, X, Z, k = 1, K = K)$beta
-    beta_liml   <- cv.PKCIVE(Y, X, Z, k = params$klimln, K = K)$beta
-    beta_ful    <- cv.PKCIVE(Y, X, Z, k = params$kfuln, K = K)$beta
+    beta_liml   <- cv.PKCIVE(Y, X, Z, k = params$kliml, K = K)$beta
+    beta_ful    <- cv.PKCIVE(Y, X, Z, k = params$kful, K = K)$beta
     beta_pjtsls <- cv.LJIVE(Y, X, Z, k = 1, K = K)$beta
-    beta_pjliml <- cv.LJIVE(Y, X, Z, k = params$klimlnj, K = K)$beta
-    beta_pjful  <- cv.LJIVE(Y, X, Z, k = params$kfulnj, K = K)$beta
+    beta_pjliml <- cv.LJIVE(Y, X, Z, k = params$klimlj, K = K)$beta
+    beta_pjful  <- cv.LJIVE(Y, X, Z, k = params$kfulj, K = K)$beta
 
     results <- data.frame(
       Method = c("PTSLS", "PLIML", "PFUL", "PJTSLS", "PJLIML", "PJFUL"),
@@ -119,11 +119,11 @@ pive <- function(Y, X, Z, bootstrap = TRUE, B = 500, alpha = 0.05, K = 10) {
   for (i in 1:nrow(results)) {
     fit <- switch(results$Method[i],
                   "PTSLS"  = cv.PKCIVE(Y, X, Z, k = 1, K = K),
-                  "PLIML"  = cv.PKCIVE(Y, X, Z, k = params$klimln, K = K),
-                  "PFUL"   = cv.PKCIVE(Y, X, Z, k = params$kfuln, K = K),
+                  "PLIML"  = cv.PKCIVE(Y, X, Z, k = params$kliml, K = K),
+                  "PFUL"   = cv.PKCIVE(Y, X, Z, k = params$kful, K = K),
                   "PJTSLS" = cv.LJIVE(Y, X, Z, k = 1, K = K),
-                  "PJLIML" = cv.LJIVE(Y, X, Z, k = params$klimlnj, K = K),
-                  "PJFUL"  = cv.LJIVE(Y, X, Z, k = params$kfulnj, K = K)
+                  "PJLIML" = cv.LJIVE(Y, X, Z, k = params$klimlj, K = K),
+                  "PJFUL"  = cv.LJIVE(Y, X, Z, k = params$kfulj, K = K)
     )
 
     invalid_instruments <- paste(fit$whichInvalid, collapse = ", ")
