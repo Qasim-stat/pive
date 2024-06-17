@@ -43,7 +43,7 @@ h[i] <- t(Z[i,])%*%iZZ%*%Z[i,]
     }#n           
 H = diag(h)
 klimlj <- min(eigen(ginv(t(W)  %*% W) %*% (t(W) %*% (Pz - H) %*% W ))$values)
-kfulj  <- (klimlj - (1-klimlj)/(n))*(1 - (1-klimlj)/(n))
+kfulj  <- (klimlj - (1-klimlj)/(n))/(1 - (1-klimlj)/(n))
 cv.LJIVE(Y,X,Z,k = 1)
 cv.LJIVE(Y,X,Z,k = klimlj)
 cv.LJIVE(Y,X,Z,k = kfulj)
