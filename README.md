@@ -1,5 +1,6 @@
 # pive
 The "pive" package provides estimates for causal models using many (weak) invalid instruments and heteroscedasticity. This package uses six instrumental variables (IV) methods to robustly estimate causal effects. Additionally, it conducts bootstrap sampling to derive estimates, standard errors, and confidence intervals.
+This R package implements the methods described in ["LASSO-type instrumental variable selection methods with an application to Mendelian randomization"](https://journals.sagepub.com/doi/full/10.1177/09622802241281035) 
 
 ## Installation
 
@@ -50,3 +51,6 @@ cv.LJIVE(Y,X,Z,k = kfulj)
  
 # Penalized K-Class IV method
 cv.PKCIVE(Y,X,Z,k = 1)
+```
+# Reference
+Qasim, M., Månsson, K., & Balakrishnan, N. (2024). [LASSO-type instrumental variable selection methods with an application to Mendelian randomization](https://journals.sagepub.com/doi/full/10.1177/09622802241281035) . Statistical Methods in Medical Research, 09622802241281035.
